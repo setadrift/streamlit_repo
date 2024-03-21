@@ -6,8 +6,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
-import sklearn.metrics as metrics
 from sklearn.metrics import precision_score, recall_score
+from sklearn.metrics import plot_confusion_matrix, plot_roc_curve, plot_precision_recall_curve
 
 def main():
     st.title("Binary Classification Web App")
@@ -33,17 +33,17 @@ def main():
     def plot_metrics(metrics_list):
         if 'Confusion Matrix' in metrics_list:
             st.subheader("Confusion Matrix")
-            metrics.plot_confusion_matrix(model, x_test, y_test, display_labels=class_names)
+            plot_confusion_matrix(model, x_test, y_test, display_labels=class_names)
             st.pyplot()
 
         if 'ROC Curve' in metrics_list:
             st.subheader("ROC Curve")
-            metrics.plot_roc_curve(model, x_test, y_test)
+            plot_roc_curve(model, x_test, y_test)
             st.pyplot()
         
         if 'Precision-Recall Curve' in metrics_list:
             st.subheader('Precision-Recall Curve')
-            metrics.plot_precision_recall_curve(model, x_test, y_test)
+            plot_precision_recall_curve(model, x_test, y_test)
             st.pyplot()
 
     df = load_data()
@@ -70,8 +70,8 @@ def main():
             accuracy = model.score(x_test, y_test)
             y_pred = model.predict(x_test)
             st.write("Accuracy: ", round(accuracy, 2))
-            st.write("Precision: ", precision_score(y_test, y_pred, labels=class_names).round(2))
-            st.write("Recall: ", recall_score(y_test, y_pred, labels=class_names).round(2))
+            st.write("Precision: ", round(precision_score(y_test, y_pred, labels=class_names), 2))
+            st.write("Recall: ", round(recall_score(y_test, y_pred, labels=class_names), 2))
             plot_metrics(metrics_to_plot)
     
     if classifier == 'Logistic Regression':
@@ -88,8 +88,9 @@ def main():
             accuracy = model.score(x_test, y_test)
             y_pred = model.predict(x_test)
             st.write("Accuracy: ", round(accuracy, 2))
-            st.write("Precision: ", precision_score(y_test, y_pred, labels=class_names).round(2))
-            st.write("Recall: ", recall_score(y_test, y_pred, labels=class_names).round(2))
+            st.write("Accuracy: ", round(accuracy, 2))
+            st.write("Precision: ", round(precision_score(y_test, y_pred, labels=class_names), 2))
+            st.write("Recall: ", round(recall_score(y_test, y_pred, labels=class_names), 2))
             plot_metrics(metrics_to_plot)
     
     if classifier == 'Random Forest':
@@ -106,8 +107,8 @@ def main():
             accuracy = model.score(x_test, y_test)
             y_pred = model.predict(x_test)
             st.write("Accuracy: ", round(accuracy, 2))
-            st.write("Precision: ", precision_score(y_test, y_pred, labels=class_names).round(2))
-            st.write("Recall: ", recall_score(y_test, y_pred, labels=class_names).round(2))
+            st.write("Precision: ", round(precision_score(y_test, y_pred, labels=class_names), 2))
+            st.write("Recall: ", round(recall_score(y_test, y_pred, labels=class_names), 2))
             plot_metrics(metrics_to_plot)
 
     if st.sidebar.checkbox("Show raw data", False):
@@ -119,3 +120,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
