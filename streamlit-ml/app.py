@@ -104,6 +104,7 @@ def main():
         n_estimators = st.sidebar.number_input("The number of trees in the forest", 100, 5000, step=10, key='n_estimators')
         max_depth = st.sidebar.number_input("The maximum depth of the tree", 1, 20, step=1, key='max_depth')
         bootstrap = st.sidebar.radio("Bootstrap samples when building trees", ('True', 'False'), key='bootstrap')
+        bootstrap = True if bootstrap == 'True' else False  # Convert to boolean
         metrics_to_plot = st.sidebar.multiselect("What metrics to plot?", ('Confusion Matrix', 'ROC Curve', 'Precision-Recall Curve'))
 
         if st.sidebar.button("Classify", key='classify'):
@@ -116,6 +117,7 @@ def main():
             st.write("Precision: ", round(precision_score(y_test, y_pred, labels=class_names), 2))
             st.write("Recall: ", round(recall_score(y_test, y_pred, labels=class_names), 2))
             plot_metrics(metrics_to_plot)
+
 
     if st.sidebar.checkbox("Show raw data", False):
         st.subheader("Mushroom Data Set (Classification)")
