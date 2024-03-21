@@ -16,7 +16,7 @@ def main():
     st.markdown("Are your mushrooms edible or poisonous? 🍄")
     st.sidebar.markdown("Are your mushrooms edible or poisonous? 🍄")
 
-    @st.experimental_memo
+    @st.cache_data
     def load_data():
         data = pd.read_csv("mushrooms.csv")
         labelencoder = LabelEncoder()
@@ -24,7 +24,7 @@ def main():
             data[col] = labelencoder.fit_transform(data[col])
         return data
 
-    @st.experimental_memo
+    @st.cache_data
     def split(df):
         y = df.type
         x = df.drop(columns=['type'])
