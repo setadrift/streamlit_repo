@@ -16,20 +16,21 @@ def main():
     st.markdown("Are your mushrooms edible or poisonous? 🍄")
     st.sidebar.markdown("Are your mushrooms edible or poisonous? 🍄")
 
-    @st.cache(persist=True)
+    @st.experimental_memo
     def load_data():
         data = pd.read_csv("mushrooms.csv")
-        labelencoder=LabelEncoder()
+        labelencoder = LabelEncoder()
         for col in data.columns:
             data[col] = labelencoder.fit_transform(data[col])
         return data
-    
-    @st.cache(persist=True)
+
+    @st.experimental_memo
     def split(df):
         y = df.type
         x = df.drop(columns=['type'])
         x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=0)
         return x_train, x_test, y_train, y_test
+
     
     def plot_metrics(metrics_list):
         if 'Confusion Matrix' in metrics_list:
