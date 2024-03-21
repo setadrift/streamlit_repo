@@ -8,6 +8,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import precision_score, recall_score
 from sklearn.metrics import ConfusionMatrixDisplay, RocCurveDisplay, PrecisionRecallDisplay
+import matplotlib.pyplot as plt
 
 def main():
     st.title("Binary Classification Web App")
@@ -33,18 +34,22 @@ def main():
     def plot_metrics(metrics_list):
         if 'Confusion Matrix' in metrics_list:
             st.subheader("Confusion Matrix")
-            ConfusionMatrixDisplay.from_estimator(model, x_test, y_test, display_labels=class_names)
-            st.pyplot()
+            fig, ax = plt.subplots()
+            ConfusionMatrixDisplay.from_estimator(model, x_test, y_test, display_labels=class_names, ax=ax)
+            st.pyplot(fig)
 
         if 'ROC Curve' in metrics_list:
             st.subheader("ROC Curve")
-            RocCurveDisplay.from_estimator(model, x_test, y_test)
-            st.pyplot()
+            fig, ax = plt.subplots()
+            RocCurveDisplay.from_estimator(model, x_test, y_test, ax=ax)
+            st.pyplot(fig)
 
         if 'Precision-Recall Curve' in metrics_list:
             st.subheader('Precision-Recall Curve')
-            PrecisionRecallDisplay.from_estimator(model, x_test, y_test)
-            st.pyplot()
+            fig, ax = plt.subplots()
+            PrecisionRecallDisplay.from_estimator(model, x_test, y_test, ax=ax)
+            st.pyplot(fig)
+
 
     df = load_data()
     class_names = ['edible', 'poisonous']
