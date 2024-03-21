@@ -6,7 +6,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import plot_confusion_matrix, plot_roc_curve, plot_precision_recall_curve
+import sklearn.metrics as metrics
 from sklearn.metrics import precision_score, recall_score
 
 def main():
@@ -17,7 +17,7 @@ def main():
 
     @st.cache(persist=True)
     def load_data():
-        data = pd.read_csv("path\\to\\mushrooms.csv")
+        data = pd.read_csv("path/to/mushrooms.csv")
         labelencoder=LabelEncoder()
         for col in data.columns:
             data[col] = labelencoder.fit_transform(data[col])
@@ -33,17 +33,17 @@ def main():
     def plot_metrics(metrics_list):
         if 'Confusion Matrix' in metrics_list:
             st.subheader("Confusion Matrix")
-            plot_confusion_matrix(model, x_test, y_test, display_labels=class_names)
+            metrics.plot_confusion_matrix(model, x_test, y_test, display_labels=class_names)
             st.pyplot()
 
         if 'ROC Curve' in metrics_list:
             st.subheader("ROC Curve")
-            plot_roc_curve(model, x_test, y_test)
+            metrics.plot_roc_curve(model, x_test, y_test)
             st.pyplot()
         
         if 'Precision-Recall Curve' in metrics_list:
             st.subheader('Precision-Recall Curve')
-            plot_precision_recall_curve(model, x_test, y_test)
+            metrics.plot_precision_recall_curve(model, x_test, y_test)
             st.pyplot()
 
     df = load_data()
@@ -61,7 +61,7 @@ def main():
         kernel = st.sidebar.radio("Kernel", ("rbf", "linear"), key='kernel')
         gamma = st.sidebar.radio("Gamma (Kernel Coefficient)", ("scale", "auto"), key='gamma')
 
-        metrics = st.sidebar.multiselect("What metrics to plot?", ('Confusion Matrix', 'ROC Curve', 'Precision-Recall Curve'))
+        metrics_to_plot = st.sidebar.multiselect("What metrics to plot?", ('Confusion Matrix', 'ROC Curve', 'Precision-Recall Curve'))
         
         if st.sidebar.button("Classify", key='classify'):
             st.subheader("Support Vector Machine (SVM) Results")
@@ -72,14 +72,14 @@ def main():
             st.write("Accuracy: ", accuracy.round(2))
             st.write("Precision: ", precision_score(y_test, y_pred, labels=class_names).round(2))
             st.write("Recall: ", recall_score(y_test, y_pred, labels=class_names).round(2))
-            plot_metrics(metrics)
+            plot_metrics(metrics_to_plot)
     
     if classifier == 'Logistic Regression':
         st.sidebar.subheader("Model Hyperparameters")
         C = st.sidebar.number_input("C (Regularization parameter)", 0.01, 10.0, step=0.01, key='C_LR')
         max_iter = st.sidebar.slider("Maximum number of iterations", 100, 500, key='max_iter')
 
-        metrics = st.sidebar.multiselect("What metrics to plot?", ('Confusion Matrix', 'ROC Curve', 'Precision-Recall Curve'))
+        metrics_to_plot = st.sidebar.multiselect("What metrics to plot?", ('Confusion Matrix', 'ROC Curve', 'Precision-Recall Curve'))
 
         if st.sidebar.button("Classify", key='classify'):
             st.subheader("Logistic Regression Results")
@@ -90,14 +90,14 @@ def main():
             st.write("Accuracy: ", accuracy.round(2))
             st.write("Precision: ", precision_score(y_test, y_pred, labels=class_names).round(2))
             st.write("Recall: ", recall_score(y_test, y_pred, labels=class_names).round(2))
-            plot_metrics(metrics)
+            plot_metrics(metrics_to_plot)
     
     if classifier == 'Random Forest':
         st.sidebar.subheader("Model Hyperparameters")
         n_estimators = st.sidebar.number_input("The number of trees in the forest", 100, 5000, step=10, key='n_estimators')
-        max_depth = st.sidebar.number_input("The maximum depth of the tree", 1, 20, step=1, key='n_estimators')
+        max_depth = st.sidebar.number_input("The maximum depth of the tree", 1, 20, step=1, key='max_depth')
         bootstrap = st.sidebar.radio("Bootstrap samples when building trees", ('True', 'False'), key='bootstrap')
-        metrics = st.sidebar.multiselect("What metrics to plot?", ('Confusion Matrix', 'ROC Curve', 'Precision-Recall Curve'))
+        metrics_to_plot = st.sidebar.multiselect("What metrics to plot?", ('Confusion Matrix', 'ROC Curve', 'Precision-Recall Curve'))
 
         if st.sidebar.button("Classify", key='classify'):
             st.subheader("Random Forest Results")
@@ -108,7 +108,7 @@ def main():
             st.write("Accuracy: ", accuracy.round(2))
             st.write("Precision: ", precision_score(y_test, y_pred, labels=class_names).round(2))
             st.write("Recall: ", recall_score(y_test, y_pred, labels=class_names).round(2))
-            plot_metrics(metrics)
+            plot_metrics(metrics_to_plot)
 
     if st.sidebar.checkbox("Show raw data", False):
         st.subheader("Mushroom Data Set (Classification)")
@@ -119,5 +119,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
